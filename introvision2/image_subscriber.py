@@ -16,27 +16,32 @@ import cv2
 # rclpy ライブラリを初期化して、このプログラムから ROS2 を扱えるようにする
 rclpy.init()
 
-# このプログラム内でノード宣言する。
-# ノード宣言することで ROS2 の各種インターフェースにアクセスできる
-# 引数にノード名を記述する。
+# このプログラム内でノードを宣言する
+# ノードを宣言することで ROS2 の各種インターフェースにアクセスできる
+# 引数にノード名を記述する
 node = Node("image_publisher")
 
 # CvBridge を初期化する
-bridge = CvBridge()
+bridge = CvBridge()  # OpenCV 画像と ROS2 画像メッセージの相互変換を行うためのブリッジを作成
 
 
 # 画像メッセージを取得したときに実行される関数
-def callback(msg:Image):
+def callback(msg: Image):
+    # 受信した画像メッセージのログを表示
     node.get_logger().info("get image !")
 
+    # ROS2 画像メッセージを OpenCV 画像に変換
     image = bridge.imgmsg_to_cv2(msg, "bgr8")
 
-    cv2.imshow("subscribed image", image)
-    cv2.waitKey(1)
+    # 変換した画像を表示
+    cv2.imshow("subscribed image", image)  # 受信した画像をウィンドウに表示
+    cv2.waitKey(1)  # 1ミリ秒待機してウィンドウの更新を行う
 
 
 # サブスクライバーを作成
+# "image" トピックから Image メッセージを受信し、callback 関数を呼び出す
 subscriber = node.create_subscription(Image, "image", callback, 10)
 
 # ノードをスピンさせる
+# これにより、ノードはメッセージを受信し続ける
 rclpy.spin(node)
