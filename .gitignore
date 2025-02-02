@@ -1,5 +1,7 @@
 **/__pycache__/**
 **/*.jpg
 **/*.png
+**/*.mp4
 
 !src/lena.jpg
+!src/nyancat.mp4
